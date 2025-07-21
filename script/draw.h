@@ -10,6 +10,7 @@
 #include "world.h"
 #include "block.h"
 #include "models.h"
+#include "voxel.h"
 
 class Draw{
 
@@ -25,8 +26,9 @@ class Draw{
 
                 if (is_render_block(world, block.position) == true){
 
-                    std::vector<Voxel::Vector3> arr_v = append_vec_array(block.model.vertices, block.position);
-                    std::vector<int> arr_i = append_int_array(block.model.indices, _block_count * block.model.vertices.size());
+                    std::vector<Voxel::Vector3> arr_v = append_vertice_array(block.model.vertices, block.position);
+                    std::vector<Voxel::Vector3i> arr_n = append_normal_array(block.model.normal);
+                    std::vector<int> arr_i = append_indice_array(block.model.indices, _block_count * block.model.vertices.size());
 
                     _block_count ++;
 
@@ -39,6 +41,11 @@ class Draw{
                         mm.indices.end(),
                         arr_i.begin(),
                         arr_i.end()
+                    );
+                    mm.normal.insert(
+                        mm.normal.end(),
+                        arr_n.begin(),
+                        arr_n.end()
                     );
                     mm.uv.insert(
                         mm.uv.end(),
@@ -63,7 +70,7 @@ class Draw{
 
 
 
-        static std::vector<Voxel::Vector3> append_vec_array(std::vector<Voxel::Vector3> _vector_list, Voxel::Vector3i _vector3) {
+        static std::vector<Voxel::Vector3> append_vertice_array(std::vector<Voxel::Vector3> _vector_list, Voxel::Vector3i _vector3) {
             std::vector<Voxel::Vector3> _arr;
 
             for (Voxel::Vector3 vec : _vector_list){
@@ -72,7 +79,16 @@ class Draw{
 
             return _arr;
         };
-        static std::vector<int> append_int_array(std::vector<int> _int_list, int _add) {
+        static std::vector<Voxel::Vector3i> append_normal_array(std::vector<Voxel::Vector3i> _vector_list) {
+            std::vector<Voxel::Vector3i> _arr;
+
+            for (Voxel::Vector3i vec : _vector_list){
+                _arr.push_back(vec);
+            };
+
+            return _arr;
+        };
+        static std::vector<int> append_indice_array(std::vector<int> _int_list, int _add) {
             std::vector<int> _arr;
 
             for (int number : _int_list){

@@ -128,6 +128,8 @@ class Models{
             mm.indices.insert(mm.indices.end(),RIGHT_INDEX.begin(),RIGHT_INDEX.end());
             mm.indices.insert(mm.indices.end(),LEFT_INDEX.begin(),LEFT_INDEX.end());
 
+            //std::cout << "vertice" << (mm.vertices.size()) << std::endl;
+            //std::cout << "normal" << (mm.normal.size()) << std::endl;
 
             return mm;
         };

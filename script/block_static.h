@@ -11,17 +11,20 @@ class BlockScope{
     public:
         struct Surface{
             std::vector<Voxel::Vector3> vertices;
-            std::vector<int> indices;
+            std::vector<Voxel::Vector3i> normal;
             std::vector<Voxel::Vector2> uv;
+            std::vector<int> indices;
+
 
             Surface() = default;
-            Surface(std::vector<Voxel::Vector3> _v,std::vector<int> _i,std::vector<Voxel::Vector2> _u): vertices(_v), indices(_i), uv(_u){};
+            Surface(std::vector<Voxel::Vector3> _v,std::vector<Voxel::Vector3i> _n,std::vector<int> _i,std::vector<Voxel::Vector2> _u): vertices(_v), indices(_i), uv(_u){};
             Surface(Models::ModelMap value):
-                vertices(value.vertices), indices(value.indices),uv(value.uv) {};
-            
+                vertices(value.vertices), normal(value.normal), indices(value.indices),uv(value.uv) {};
+
             BlockScope::Surface operator=(Models::ModelMap value){
                 vertices = value.vertices;
                 indices = value.indices;
+                normal = value.normal;
                 uv = value.uv;
 
                 return *this;
@@ -36,7 +39,7 @@ class BlockScope{
             Voxel::Vector3i(0,0,-1),
             Voxel::Vector3i(0,-1,0),
             Voxel::Vector3i(-1,0,0),
-            
+
         };
 
         enum BLOCK_ID {AIR, GRASS};
@@ -49,7 +52,7 @@ class BlockScope{
 
 template <>
 struct std::hash<Voxel::Vector3i>{
-            
+
     std::size_t operator()(const Voxel::Vector3i& v) const {
         std::size_t hx = std::hash<int>()(v.x);
         std::size_t hy = std::hash<int>()(v.y);
@@ -60,7 +63,7 @@ struct std::hash<Voxel::Vector3i>{
 };
 template <>
 struct std::hash<Voxel::Vector3>{
-            
+
     std::size_t operator()(const Voxel::Vector3& v) const {
         std::size_t hx = std::hash<float>()(v.x);
         std::size_t hy = std::hash<float>()(v.y);
@@ -71,7 +74,7 @@ struct std::hash<Voxel::Vector3>{
 };
 template <>
 struct std::hash<Voxel::Vector2>{
-            
+
     std::size_t operator()(const Voxel::Vector2& v) const {
         std::size_t hx = std::hash<float>()(v.x);
         std::size_t hy = std::hash<float>()(v.y);
@@ -79,4 +82,3 @@ struct std::hash<Voxel::Vector2>{
         return ((hx ^ (hy << 1)) >> 1);
     };
 };
-

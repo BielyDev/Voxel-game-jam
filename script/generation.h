@@ -9,8 +9,8 @@
 
 class Generation{
     public:
-        const Voxel::Vector3i WORLD_SIZE = Voxel::Vector3i(4,1,4);
-        const Voxel::Vector3i CHUNK_SIZE = Voxel::Vector3i(8,8,8);
+        const Voxel::Vector3i WORLD_SIZE = Voxel::Vector3i(8,1,8);
+        const Voxel::Vector3i CHUNK_SIZE = Voxel::Vector3i(8,16,8);
 
         FastNoiseLite noise;
 
@@ -35,7 +35,7 @@ class Generation{
             for (int32_t y = 0; y < _amount.y; y++){
             for (int32_t z = 0; z < _amount.z; z++){
                 Voxel::Vector3i _chunk_position = (_position + (_amount_div - Voxel::Vector3i(x,y,z)) * _chunk_size);
-                
+
                 chunk_list[_chunk_position] = gen_chunk(_world, _chunk_position, _chunk_size);
             }}};
 
@@ -76,4 +76,3 @@ class Generation{
             return new_chunk;
         };
 };
-

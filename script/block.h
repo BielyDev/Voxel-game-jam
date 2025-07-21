@@ -11,9 +11,9 @@ class BlockRegistry: public BlockScope{
         int8_t id = BlockScope::AIR;
         int8_t render = BlockScope::RENDER_NONE;
         int8_t collision = BlockScope::COLLISION_NONE;
-        
+
         Voxel::Vector3i position = Voxel::Vector3i::zero();
-        
+
         Surface model;
 
 };
@@ -54,5 +54,3 @@ class BlockTemplate{
             return block;
         };
 };
-
-
