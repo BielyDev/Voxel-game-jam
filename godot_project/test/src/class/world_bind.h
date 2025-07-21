@@ -1,0 +1,69 @@
+#pragma once
+
+#include <unordered_set>
+#include <godot_cpp/core/class_db.hpp>
+#include <godot_cpp/classes/node3d.hpp>
+#include <godot_cpp/classes/mesh_instance3d.hpp>
+#include <godot_cpp/classes/array_mesh.hpp>
+#include <godot_cpp/classes/input.hpp>
+
+#include "../../../script/generation.h"
+#include "../../../script/draw.h"
+#include "../../../script/voxel.h"
+
+class WorldBind : public godot::Node3D{
+    GDCLASS(WorldBind, godot::Node3D);
+
+    public:
+        World *world = new(World);
+        Generation generation;
+        std::unordered_map<Voxel::Vector3i, Chunk> chunk_list;
+
+        void _ready() override;
+        godot::String instance_chunk(Chunk chunk);
+
+        static godot::PackedVector3Array convert_arr_unordered(std::unordered_set<Voxel::Vector3i> _block_list){
+            godot::PackedVector3Array _packet;
+
+            for (Voxel::Vector3 block_pair : _block_list){
+                _packet.push_back(godot::Vector3(block_pair.x, block_pair.y, block_pair.z));
+            };
+
+            return _packet;
+        };
+        static godot::PackedVector3Array convert_arr_vector(std::vector<Voxel::Vector3> _block_list){
+            godot::PackedVector3Array _packet;
+
+            for (Voxel::Vector3 block_pair : _block_list){
+                _packet.push_back(godot::Vector3(block_pair.x, block_pair.y, block_pair.z));
+            };
+
+            return _packet;
+        };
+        static godot::PackedVector3Array convert_arr_vectori(std::vector<Voxel::Vector3i> _block_list){
+            godot::PackedVector3Array _packet;
+
+            for (Voxel::Vector3 block_pair : _block_list){
+                _packet.push_back(godot::Vector3i(block_pair.x, block_pair.y, block_pair.z));
+            };
+
+            return _packet;
+        };
+        static godot::PackedInt32Array convert_arr_int(std::vector<int> _value){
+            godot::PackedInt32Array _packet;
+
+            for (int value_pair : _value){
+                _packet.push_back(value_pair);
+            };
+
+            return _packet;
+        };
+
+        static godot::Vector3 convert_vector(Voxel::Vector3 _vector){
+            return godot::Vector3(_vector.x, _vector.y, _vector.z);
+        };
+
+
+    protected:
+        static void _bind_methods(){};
+};

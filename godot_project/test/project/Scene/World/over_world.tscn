@@ -1,0 +1,49 @@
+[gd_scene load_steps=4 format=3 uid="uid://bbu4jj14tq8cf"]
+
+[ext_resource type="Environment" uid="uid://dtd3q2x2ulcsi" path="res://default_env.tres" id="1_p7faw"]
+
+[sub_resource type="GDScript" id="GDScript_p7faw"]
+script/source = "extends Node3D
+
+func _process(_delta: float) -> void:
+	$Label.text = str(Engine.get_frames_per_second())
+"
+
+[sub_resource type="BoxMesh" id="BoxMesh_p7faw"]
+
+[node name="World" type="Node3D"]
+script = SubResource("GDScript_p7faw")
+
+[node name="SubViewportContainer" type="SubViewportContainer" parent="."]
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+stretch = true
+
+[node name="SubViewport" type="SubViewport" parent="SubViewportContainer"]
+handle_input_locally = false
+size = Vector2i(1152, 648)
+render_target_update_mode = 4
+
+[node name="CameraMain" type="CameraMain" parent="SubViewportContainer/SubViewport"]
+
+[node name="SpotLight3D" type="SpotLight3D" parent="SubViewportContainer/SubViewport/CameraMain"]
+
+[node name="WorldBind" type="WorldBind" parent="."]
+
+[node name="WorldEnvironment" type="WorldEnvironment" parent="."]
+environment = ExtResource("1_p7faw")
+
+[node name="DirectionalLight3D" type="DirectionalLight3D" parent="."]
+transform = Transform3D(0.866025, 0.433013, -0.25, 0, 0.5, 0.866025, 0.5, -0.75, 0.433013, 0, 0, 0)
+
+[node name="Label" type="Label" parent="."]
+offset_right = 40.0
+offset_bottom = 23.0
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -5.1678, 0, 0)
+visible = false
+mesh = SubResource("BoxMesh_p7faw")
