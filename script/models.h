@@ -14,10 +14,51 @@ class Models{
             std::vector<Voxel::Vector3i> normal;
             std::vector<Voxel::Vector2> uv;
             std::vector<int> indices;
+
+
+            std::vector<Voxel::Vector2> make_one_uv(const std::vector<Voxel::Vector2> side){
+                std::vector<Voxel::Vector2> new_side = calcule_uv(side);
+
+                uv.insert(uv.end(),new_side.begin(),new_side.end());
+                uv.insert(uv.end(),new_side.begin(),new_side.end());
+                uv.insert(uv.end(),new_side.begin(),new_side.end());
+                uv.insert(uv.end(),new_side.begin(),new_side.end());
+                uv.insert(uv.end(),new_side.begin(),new_side.end());
+                uv.insert(uv.end(),new_side.begin(),new_side.end());
+
+                return uv;
+            };
+            std::vector<Voxel::Vector2> make_tri_uv(const std::vector<Voxel::Vector2> floor, const std::vector<Voxel::Vector2> up, const std::vector<Voxel::Vector2> side){
+                std::vector<Voxel::Vector2> new_floor = calcule_uv(floor);
+                std::vector<Voxel::Vector2> new_side = calcule_uv(side);
+                std::vector<Voxel::Vector2> new_up = calcule_uv(up);
+
+                uv.insert(uv.end(),new_up.begin(),new_up.end());
+                uv.insert(uv.end(),new_floor.begin(),new_floor.end());
+                uv.insert(uv.end(),new_side.begin(),new_side.end());
+                uv.insert(uv.end(),new_side.begin(),new_side.end());
+                uv.insert(uv.end(),new_side.begin(),new_side.end());
+                uv.insert(uv.end(),new_side.begin(),new_side.end());
+
+
+                return uv;
+            };
+
+            std::vector<Voxel::Vector2> calcule_uv(const std::vector<Voxel::Vector2> _uv) const {
+                std::vector<Voxel::Vector2> return_uv;
+
+                for (Voxel::Vector2 vec : _uv){
+                    return_uv.push_back(vec/TEXTURE_SIZE);
+                };
+
+                return return_uv;
+
+            };
         };
 
 
-        const float SIZE = 0.5;
+        inline static const float SIZE = 0.5;
+        inline static const int TEXTURE_SIZE = 64;
 
         const std::vector<Voxel::Vector3> UP = {
             Voxel::Vector3(SIZE,SIZE,SIZE),

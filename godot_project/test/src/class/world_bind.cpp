@@ -25,6 +25,7 @@ godot::String WorldBind::instance_chunk(Chunk chunk){
     surface_godot.resize(godot::Mesh::ARRAY_MAX);
     surface_godot[godot::Mesh::ARRAY_VERTEX] = convert_arr_vector(mm.vertices);
     surface_godot[godot::Mesh::ARRAY_NORMAL] = convert_arr_vectori(mm.normal);
+    surface_godot[godot::Mesh::ARRAY_TEX_UV] = convert_arr_vector2(mm.uv);
     surface_godot[godot::Mesh::ARRAY_INDEX] = convert_arr_int(mm.indices);
 
     array_mesh->add_surface_from_arrays(
@@ -33,6 +34,7 @@ godot::String WorldBind::instance_chunk(Chunk chunk){
     );
 
     new_mesh->set_mesh(array_mesh);
+    new_mesh->set_material_overlay(material);
 
     return godot::UtilityFunctions::str(godot::Array(surface_godot[godot::Mesh::ARRAY_VERTEX]).size()," - ", godot::Array(surface_godot[godot::Mesh::ARRAY_INDEX]).size());
 };

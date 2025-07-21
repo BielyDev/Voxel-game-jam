@@ -1,0 +1,9 @@
+[gd_resource type="ShaderMaterial" load_steps=3 format=3 uid="uid://c417iwwske0cc"]
+
+[ext_resource type="Shader" uid="uid://bsn3etfsg3ar3" path="res://Script/Shader/block.tres" id="1_d2at4"]
+[ext_resource type="Texture2D" uid="uid://dwx5ejkca8o8x" path="res://Assets/Image/sprite.png" id="2_xwki8"]
+
+[resource]
+render_priority = 0
+shader = ExtResource("1_d2at4")
+shader_parameter/Texture = ExtResource("2_xwki8")

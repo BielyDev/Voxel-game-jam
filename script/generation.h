@@ -9,14 +9,14 @@
 
 class Generation{
     public:
-        const Voxel::Vector3i WORLD_SIZE = Voxel::Vector3i(8,1,8);
-        const Voxel::Vector3i CHUNK_SIZE = Voxel::Vector3i(8,16,8);
+        const Voxel::Vector3i WORLD_SIZE = Voxel::Vector3i(1,1,1);
+        const Voxel::Vector3i CHUNK_SIZE = Voxel::Vector3i(8,32,8);
 
         FastNoiseLite noise;
 
         void new_noise(int64_t _seed, FastNoiseLite::NoiseType _noise_type){
             noise.SetSeed(2);
-            noise.SetNoiseType(_noise_type);
+            noise.SetNoiseType(FastNoiseLite::NoiseType_Cellular);
             //noise.SetFrequency(0.1);
         };
 
@@ -33,10 +33,10 @@ class Generation{
 
             for (int32_t x = 0; x < _amount.x; x++){
             for (int32_t y = 0; y < _amount.y; y++){
-            for (int32_t z = 0; z < _amount.z; z++){
+             for (int32_t z = 0; z < _amount.z; z++){
                 Voxel::Vector3i _chunk_position = (_position + (_amount_div - Voxel::Vector3i(x,y,z)) * _chunk_size);
 
-                chunk_list[_chunk_position] = gen_chunk(_world, _chunk_position, _chunk_size);
+                chunk_list[_chunk_position] = gen_chunk(_world, _chunk_position - _chunk_position.div(2), _chunk_size);
             }}};
 
             return chunk_list;
@@ -47,20 +47,22 @@ class Generation{
 
             new_chunk.position = _position;
             Voxel::Vector3i _size_div = _size.div(2);
+            _size_div.y = 0;
 
             for (int32_t x = 0; x < _size.x; x++){
             for (int32_t y = 0; y < _size.y; y++){
             for (int32_t z = 0; z < _size.z; z++){
                 Block new_block = BlockTemplate::Air();
-                Voxel::Vector3i block_position = _position + (_size_div - Voxel::Vector3i(x,y,z));
+                Voxel::Vector3i block_position = _position + (Voxel::Vector3i(x,y,z));
 
                 float value = noise.GetNoise(float(block_position.x), float(block_position.y), float(block_position.z));
                 int32_t height = int32_t(value * _size.y);
 
+
                 if (y == 0){
-                    new_block = BlockTemplate::Grass();
+                    new_block = BlockTemplate::Bedrock();
                 } else{
-                    if (height < y){
+                    if (y < height){
                         new_block = BlockTemplate::Grass();
                     };
                 };

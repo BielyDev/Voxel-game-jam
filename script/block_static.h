@@ -42,7 +42,7 @@ class BlockScope{
 
         };
 
-        enum BLOCK_ID {AIR, GRASS};
+        enum BLOCK_ID {AIR, GRASS, BEDROCK};
         enum RENDER {RENDER_NONE, RENDER_SOLID, RENDER_TRANSPARENT};
         enum COLLISION {COLLISION_NONE, COLLISION_SOLID, COLLISION_AREA};
 };

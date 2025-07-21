@@ -6,6 +6,8 @@
 #include <godot_cpp/classes/mesh_instance3d.hpp>
 #include <godot_cpp/classes/array_mesh.hpp>
 #include <godot_cpp/classes/input.hpp>
+#include <godot_cpp/classes/resource_loader.hpp>
+#include <godot_cpp/classes/material.hpp>
 
 #include "../../../script/generation.h"
 #include "../../../script/draw.h"
@@ -18,6 +20,7 @@ class WorldBind : public godot::Node3D{
         World *world = new(World);
         Generation generation;
         std::unordered_map<Voxel::Vector3i, Chunk> chunk_list;
+        godot::Ref<godot::Material> material = godot::ResourceLoader::get_singleton()->load("res://Assets/Material/block.tres");
 
         void _ready() override;
         godot::String instance_chunk(Chunk chunk);
@@ -36,6 +39,15 @@ class WorldBind : public godot::Node3D{
 
             for (Voxel::Vector3 block_pair : _block_list){
                 _packet.push_back(godot::Vector3(block_pair.x, block_pair.y, block_pair.z));
+            };
+
+            return _packet;
+        };
+        static godot::PackedVector2Array convert_arr_vector2(std::vector<Voxel::Vector2> _block_list){
+            godot::PackedVector2Array _packet;
+
+            for (Voxel::Vector2 block_pair : _block_list){
+                _packet.push_back(godot::Vector2(block_pair.x, block_pair.y));
             };
 
             return _packet;

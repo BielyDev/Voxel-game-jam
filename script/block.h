@@ -44,12 +44,40 @@ class BlockTemplate{
         static Block Grass(){
             Block block;
             Models pre_model;
+            Models::ModelMap model = pre_model.Cube();
+
+            model.make_tri_uv(
+                std::vector<Voxel::Vector2>{
+                    Voxel::Vector2(8,0),Voxel::Vector2(16,0),Voxel::Vector2(16,8),Voxel::Vector2(8,8)},
+                std::vector<Voxel::Vector2>{
+                    Voxel::Vector2(0,8),Voxel::Vector2(8,8),Voxel::Vector2(8,16),Voxel::Vector2(0,16)},
+                std::vector<Voxel::Vector2>{
+                    Voxel::Vector2(0,8),Voxel::Vector2(0,0),Voxel::Vector2(8,0),Voxel::Vector2(8,8)}
+            );
 
             block.id = BlockScope::GRASS;
             block.render = BlockScope::RENDER_SOLID;
             block.collision = BlockScope::COLLISION_SOLID;
 
-            block.model = pre_model.Cube();
+            block.model = model;
+
+            return block;
+        };
+        static Block Bedrock(){
+            Block block;
+            Models pre_model;
+            Models::ModelMap model = pre_model.Cube();
+
+            model.make_one_uv(
+                std::vector<Voxel::Vector2>{
+                    Voxel::Vector2(16,0),Voxel::Vector2(24,0),Voxel::Vector2(24,8),Voxel::Vector2(16,8)}
+            );
+
+            block.id = BlockScope::BEDROCK;
+            block.render = BlockScope::RENDER_SOLID;
+            block.collision = BlockScope::COLLISION_SOLID;
+
+            block.model = model;
 
             return block;
         };
