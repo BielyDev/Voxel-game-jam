@@ -28,7 +28,9 @@ class Draw{
 
                     std::vector<Voxel::Vector3> arr_v = append_vertice_array(block.model.vertices, block.position);
                     std::vector<Voxel::Vector3i> arr_n = append_normal_array(block.model.normal);
-                    std::vector<int> arr_i = append_indice_array(block.model.indices, _block_count * block.model.vertices.size());
+                    //int vertex_offset = static_cast<int>();
+
+                    std::vector<int> arr_i = append_indice_array(block.model.indices, mm.vertices.size());
 
                     _block_count ++;
 
@@ -62,7 +64,7 @@ class Draw{
                 //vou deixar essa var criada pra nunca mais esquecer da onde vem o interador.
                 Voxel::Vector3i pos = dir + _position;
 
-                if (_world->all_block.find(pos) == _world->all_block.end()){return true;};
+                if (_world->air_block.find(pos) != _world->air_block.end()){return true;};
             };
 
             return false;

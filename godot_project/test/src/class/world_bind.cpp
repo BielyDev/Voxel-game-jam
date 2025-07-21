@@ -1,6 +1,6 @@
 #include "world_bind.h"
 
-
+#include <godot_cpp/classes/box_mesh.hpp>
 void WorldBind::_ready(){
     generation.new_noise(std::rand(), FastNoiseLite::NoiseType_Perlin);
     chunk_list = generation.generation_world(world, Voxel::Vector3i());
@@ -37,4 +37,5 @@ godot::String WorldBind::instance_chunk(Chunk chunk){
     new_mesh->set_material_overlay(material);
 
     return godot::UtilityFunctions::str(godot::Array(surface_godot[godot::Mesh::ARRAY_VERTEX]).size()," - ", godot::Array(surface_godot[godot::Mesh::ARRAY_INDEX]).size());
+
 };

@@ -9,15 +9,18 @@
 
 class Generation{
     public:
-        const Voxel::Vector3i WORLD_SIZE = Voxel::Vector3i(1,1,1);
+        const Voxel::Vector3i WORLD_SIZE = Voxel::Vector3i(20,1,20);
         const Voxel::Vector3i CHUNK_SIZE = Voxel::Vector3i(8,32,8);
 
         FastNoiseLite noise;
 
-        void new_noise(int64_t _seed, FastNoiseLite::NoiseType _noise_type){
-            noise.SetSeed(2);
-            noise.SetNoiseType(FastNoiseLite::NoiseType_Cellular);
-            //noise.SetFrequency(0.1);
+        void new_noise(int64_t _seed, FastNoiseLite::NoiseType _noise_type, FastNoiseLite::FractalType _fractal_type = FastNoiseLite::FractalType_FBm, float _frequency = 0.02, int _octaves = 5,float _gain = 0.5){
+            noise.SetSeed(_seed);
+            noise.SetNoiseType(_noise_type);
+            noise.SetFractalType(_fractal_type);
+            noise.SetFrequency(_frequency);
+            //noise.SetFractalOctaves(_octaves);
+            //noise.SetFractalGain(_gain);
         };
 
         std::unordered_map<Voxel::Vector3i, Chunk> generation_world(World *_world, Voxel::Vector3i _position){
@@ -34,9 +37,9 @@ class Generation{
             for (int32_t x = 0; x < _amount.x; x++){
             for (int32_t y = 0; y < _amount.y; y++){
              for (int32_t z = 0; z < _amount.z; z++){
-                Voxel::Vector3i _chunk_position = (_position + (_amount_div - Voxel::Vector3i(x,y,z)) * _chunk_size);
+                Voxel::Vector3i _chunk_position = (_position + (_amount_div - Voxel::Vector3i(x,y,z) * _chunk_size));
 
-                chunk_list[_chunk_position] = gen_chunk(_world, _chunk_position - _chunk_position.div(2), _chunk_size);
+                chunk_list[_chunk_position] = gen_chunk(_world, _chunk_position, _chunk_size);
             }}};
 
             return chunk_list;
@@ -47,16 +50,15 @@ class Generation{
 
             new_chunk.position = _position;
             Voxel::Vector3i _size_div = _size.div(2);
-            _size_div.y = 0;
 
             for (int32_t x = 0; x < _size.x; x++){
             for (int32_t y = 0; y < _size.y; y++){
             for (int32_t z = 0; z < _size.z; z++){
                 Block new_block = BlockTemplate::Air();
-                Voxel::Vector3i block_position = _position + (Voxel::Vector3i(x,y,z));
+                Voxel::Vector3i block_position = _position + (Voxel::Vector3i(x,y,z) - _size_div);
 
-                float value = noise.GetNoise(float(block_position.x), float(block_position.y), float(block_position.z));
-                int32_t height = int32_t(value * _size.y);
+                float value = noise.GetNoise(float(block_position.x), float(block_position.y), float(block_position.z)) + 1;
+                int32_t height = int32_t((value * 0.5) * _size.y);
 
 
                 if (y == 0){
@@ -71,6 +73,8 @@ class Generation{
 
                 if (new_block.id != BlockScope::AIR){
                     _world->all_block.insert(new_block.position);
+                } else {
+                    _world->air_block.insert(new_block.position);
                 };
 
             }}};
