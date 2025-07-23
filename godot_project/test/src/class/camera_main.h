@@ -17,7 +17,7 @@ class CameraMain : public godot::Camera3D {
 
 public:
 	struct ViewSettings {
-		const float MAX_DISTANCE = 25.0;
+		const float MAX_DISTANCE = 50.0;
 		const float MIN_DISTANCE = 1.0;
 
 		float sensibility = 0.5;

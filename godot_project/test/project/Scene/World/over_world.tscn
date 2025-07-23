@@ -27,21 +27,18 @@ render_target_update_mode = 4
 
 [node name="CameraMain" type="CameraMain" parent="SubViewportContainer/SubViewport"]
 
-[node name="SpotLight3D" type="SpotLight3D" parent="SubViewportContainer/SubViewport/CameraMain"]
-shadow_enabled = true
-spot_range = 9.99777
-spot_angle = 34.6106
-
 [node name="WorldBind" type="WorldBind" parent="."]
 
 [node name="WorldEnvironment" type="WorldEnvironment" parent="."]
 environment = ExtResource("1_p7faw")
 
-[node name="DirectionalLight3D" type="DirectionalLight3D" parent="."]
-transform = Transform3D(0.866025, 0.433013, -0.25, 0, 0.5, 0.866025, 0.5, -0.75, 0.433013, 0, 0, 0)
-light_energy = 0.605
-shadow_enabled = true
-
 [node name="Label" type="Label" parent="."]
 offset_right = 40.0
 offset_bottom = 23.0
+
+[node name="DirectionalLight3D" type="DirectionalLight3D" parent="."]
+transform = Transform3D(0.715693, 0.417127, -0.560169, 0, 0.802057, 0.597247, 0.698415, -0.427446, 0.574027, 0, 0, 0)
+light_energy = 0.525
+light_cull_mask = 4293918721
+shadow_enabled = true
+shadow_opacity = 0.57
