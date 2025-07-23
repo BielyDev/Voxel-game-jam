@@ -40,6 +40,7 @@ void CameraMain::_physics_process(float _delta){
 void CameraMain::init_position() {
 	set_position(godot::Vector3(0.0, 2.0, 2.0));
 	pivot.rotation_degrees.x = 35.0;
+	pivot.position.y = 20;
 	update_pivot(0.0, false);
 };
 

@@ -23,7 +23,7 @@ class WorldBind : public godot::Node3D{
         godot::Ref<godot::Material> material = godot::ResourceLoader::get_singleton()->load("res://Assets/Material/block.tres");
 
         void _ready() override;
-        godot::String instance_chunk(Chunk chunk);
+        void instance_chunk(Chunk chunk);
 
         static godot::PackedVector3Array convert_arr_unordered(std::unordered_set<Voxel::Vector3i> _block_list){
             godot::PackedVector3Array _packet;
@@ -62,6 +62,15 @@ class WorldBind : public godot::Node3D{
             return _packet;
         };
         static godot::PackedInt32Array convert_arr_int(std::vector<int> _value){
+            godot::PackedInt32Array _packet;
+
+            for (int value_pair : _value){
+                _packet.push_back(value_pair);
+            };
+
+            return _packet;
+        };
+        static godot::PackedInt32Array convert_arr_u_int(std::vector<u_int> _value){
             godot::PackedInt32Array _packet;
 
             for (int value_pair : _value){
