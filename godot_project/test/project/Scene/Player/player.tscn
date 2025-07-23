@@ -1,0 +1,74 @@
+[gd_scene load_steps=5 format=3 uid="uid://dite8rh7je7x5"]
+
+[sub_resource type="GDScript" id="GDScript_a1qst"]
+script/source = "extends CharacterBody3D
+
+@onready var Cam: Camera3D = $Cam
+@onready var cube: MeshInstance3D = $cube
+@onready var Ray: RayCast3D = $Cam/Ray
+
+const SPEED: int = 6
+const JUMP: float = 8.0
+const GRAVITY: float = 0.4
+const GRAVITY_LIMITED: float = 20.0
+var sensi: float = 12.0
+
+func _ready() -> void:
+	Input.set_mouse_mode(Input.MOUSE_MODE_CAPTURED)
+
+func _physics_process(_delta: float) -> void:
+	cube.global_position = (Ray.get_collision_point() - Ray.get_collision_normal())
+	
+	velocity.x = 0
+	velocity.z = 0
+	
+	velocity.z += Input.get_axis(\"front\",\"back\") * (global_basis.z.normalized().z) * SPEED
+	velocity.x += Input.get_axis(\"front\",\"back\") * (global_basis.z.normalized().x) * SPEED
+	velocity.z += -Input.get_axis(\"left\",\"right\") * (global_basis.z.normalized().x) * SPEED
+	velocity.x += Input.get_axis(\"left\",\"right\") * (global_basis.z.normalized().z) * SPEED
+	
+	velocity.y += -GRAVITY
+	if velocity.y < -GRAVITY_LIMITED:
+		velocity.y = -GRAVITY_LIMITED
+	
+	if is_on_floor() and Input.is_action_just_pressed(\"jump\"):
+		velocity.y = JUMP
+	
+	move_and_slide()
+
+
+func _input(event: InputEvent) -> void:
+	if event is InputEventMouseMotion:
+		var mouse_relative: Vector2 = event.relative
+		Cam.rotation_degrees.x += -deg_to_rad(mouse_relative.y * sensi)
+		rotation_degrees.y += -deg_to_rad(mouse_relative.x * sensi)
+		
+		Cam.rotation_degrees.x = clamp(Cam.rotation_degrees.x, -90,90)
+"
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_a1qst"]
+size = Vector3(0.75, 1.7, 0.75)
+
+[sub_resource type="BoxMesh" id="BoxMesh_a1qst"]
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_a1qst"]
+albedo_color = Color(0, 0, 0, 1)
+grow = true
+grow_amount = 0.04
+
+[node name="Player" type="CharacterBody3D"]
+script = SubResource("GDScript_a1qst")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="."]
+shape = SubResource("BoxShape3D_a1qst")
+
+[node name="Cam" type="Camera3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.715433, 0)
+
+[node name="Ray" type="RayCast3D" parent="Cam"]
+target_position = Vector3(0, 0, -10)
+
+[node name="cube" type="MeshInstance3D" parent="."]
+top_level = true
+mesh = SubResource("BoxMesh_a1qst")
+surface_material_override/0 = SubResource("StandardMaterial3D_a1qst")

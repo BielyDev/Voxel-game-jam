@@ -70,7 +70,7 @@ class WorldBind : public godot::Node3D{
 
             return _packet;
         };
-        static godot::PackedInt32Array convert_arr_u_int(std::vector<u_int> _value){
+        static godot::PackedInt32Array convert_arr_u_int(std::vector<uint32_t> _value){
             godot::PackedInt32Array _packet;
 
             for (int value_pair : _value){

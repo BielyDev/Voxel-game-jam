@@ -1,21 +1,33 @@
 #include "world_bind.h"
 
 void WorldBind::_ready(){
-    generation.new_noise(std::rand(), FastNoiseLite::NoiseType_Value,FastNoiseLite::FractalType_FBm,0.03,5,0.5);
+    generation.new_noise(std::rand(), FastNoiseLite::NoiseType_Perlin,FastNoiseLite::FractalType_FBm);
     chunk_list = generation.generation_world(world, Voxel::Vector3i());
 
     for (std::pair<const Voxel::Vector3i, Chunk> &chunk : chunk_list){
         instance_chunk(chunk.second);
     };
 
-    godot::UtilityFunctions::print(world->all_block.size()," blocos solidos no mundo!");
+    godot::UtilityFunctions::print((int64_t)world->all_block.size(), " blocos solidos no mundo!");
+
 };
+
+#include <godot_cpp/classes/static_body3d.hpp>
+#include <godot_cpp/classes/collision_shape3d.hpp>
+#include <godot_cpp/classes/concave_polygon_shape3d.hpp>
 
 void WorldBind::instance_chunk(Chunk chunk){
 
     godot::MeshInstance3D *new_mesh = memnew(godot::MeshInstance3D);
+    godot::StaticBody3D *new_static = memnew(godot::StaticBody3D);
+    godot::CollisionShape3D *new_collision = memnew(godot::CollisionShape3D);
+
+    godot::ConcavePolygonShape3D *new_concave = memnew(godot::ConcavePolygonShape3D);
     godot::ArrayMesh *array_mesh = memnew(godot::ArrayMesh);
+
     add_child(new_mesh);
+    new_mesh->add_child(new_static);
+    new_static->add_child(new_collision);
 
     Models::ModelMap mesh = Draw::draw_chunk(chunk, world);
     godot::Array surface_godot = godot::Array();
@@ -31,6 +43,13 @@ void WorldBind::instance_chunk(Chunk chunk){
         surface_godot
     );
 
+    godot::PackedVector3Array faces;
+    for (uint32_t new_index : mesh.indices){
+        faces.push_back(godot::Array(surface_godot[godot::Mesh::ARRAY_VERTEX])[new_index]);
+    };
+
+    new_concave->set_faces(faces);
     new_mesh->set_mesh(array_mesh);
+    new_collision->set_shape(new_concave);
     new_mesh->set_material_overlay(material);
 };

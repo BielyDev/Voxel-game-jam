@@ -1,5 +1,6 @@
-[gd_scene load_steps=3 format=3 uid="uid://bbu4jj14tq8cf"]
+[gd_scene load_steps=4 format=3 uid="uid://bbu4jj14tq8cf"]
 
+[ext_resource type="PackedScene" uid="uid://dite8rh7je7x5" path="res://Scene/Player/player.tscn" id="1_5cxt7"]
 [ext_resource type="Environment" uid="uid://dtd3q2x2ulcsi" path="res://default_env.tres" id="1_p7faw"]
 
 [sub_resource type="GDScript" id="GDScript_p7faw"]
@@ -12,22 +13,10 @@ func _process(_delta: float) -> void:
 [node name="World" type="Node3D"]
 script = SubResource("GDScript_p7faw")
 
-[node name="SubViewportContainer" type="SubViewportContainer" parent="."]
-anchors_preset = 15
-anchor_right = 1.0
-anchor_bottom = 1.0
-grow_horizontal = 2
-grow_vertical = 2
-stretch = true
-
-[node name="SubViewport" type="SubViewport" parent="SubViewportContainer"]
-handle_input_locally = false
-size = Vector2i(1152, 648)
-render_target_update_mode = 4
-
-[node name="CameraMain" type="CameraMain" parent="SubViewportContainer/SubViewport"]
-
 [node name="WorldBind" type="WorldBind" parent="."]
+
+[node name="Player" parent="." instance=ExtResource("1_5cxt7")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 40, 4)
 
 [node name="WorldEnvironment" type="WorldEnvironment" parent="."]
 environment = ExtResource("1_p7faw")
