@@ -3,6 +3,8 @@
 
 class Voxel{
     public:
+
+
         struct Vector3i{
             int32_t x = 0;
             int32_t y = 0;
@@ -16,6 +18,9 @@ class Voxel{
             };
             Vector3i div(int32_t v) const {
                 return Vector3i(x / v, y / v, z / v);
+            };
+            Vector3i sub_xz(Vector3i v) const {
+                return Vector3i(x - v.x, y, z - v.z);
             };
             int sum_xyz() const {
                 return x + y + z;
@@ -105,4 +110,48 @@ class Voxel{
                 return Vector2(x / float(other), y / float(other));
             };
         };
+
+        inline static const std::vector<Vector3i> DIRECTION = {
+            Vector3i(0,1,0),
+            Vector3i(0,-1,0),
+            Vector3i(0,0,-1),
+            Vector3i(0,0,1),
+            Vector3i(1,0,0),
+            Vector3i(-1,0,0)
+        };
+
+};
+
+
+template <>
+struct std::hash<Voxel::Vector3i>{
+
+    std::size_t operator()(const Voxel::Vector3i& v) const {
+        std::size_t hx = std::hash<int>()(v.x);
+        std::size_t hy = std::hash<int>()(v.y);
+        std::size_t hz = std::hash<int>()(v.z);
+
+        return ((hx ^ (hy << 1)) >> 1) ^ (hz << 1);
+    };
+};
+template <>
+struct std::hash<Voxel::Vector3>{
+
+    std::size_t operator()(const Voxel::Vector3& v) const {
+        std::size_t hx = std::hash<float>()(v.x);
+        std::size_t hy = std::hash<float>()(v.y);
+        std::size_t hz = std::hash<float>()(v.z);
+
+        return ((hx ^ (hy << 1)) >> 1) ^ (hz << 1);
+    };
+};
+template <>
+struct std::hash<Voxel::Vector2>{
+
+    std::size_t operator()(const Voxel::Vector2& v) const {
+        std::size_t hx = std::hash<float>()(v.x);
+        std::size_t hy = std::hash<float>()(v.y);
+
+        return ((hx ^ (hy << 1)) >> 1);
+    };
 };
