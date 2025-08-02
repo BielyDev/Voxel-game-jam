@@ -20,7 +20,7 @@ default_value = 0.1
 
 [resource]
 code = "shader_type spatial;
-render_mode blend_mix, depth_draw_opaque, cull_back, diffuse_lambert, specular_schlick_ggx;
+render_mode blend_mix, depth_draw_always, cull_back, diffuse_lambert, specular_schlick_ggx, depth_prepass_alpha;
 
 uniform sampler2D Texture : hint_default_black, filter_nearest_mipmap, repeat_disable;
 
@@ -40,6 +40,9 @@ void fragment() {
 
 }
 "
+graph_offset = Vector2(-171.725, -69.9662)
+modes/depth_draw = 1
+flags/depth_prepass_alpha = true
 nodes/fragment/2/node = SubResource("VisualShaderNodeTexture_plyog")
 nodes/fragment/2/position = Vector2(-360, 40)
 nodes/fragment/3/node = SubResource("VisualShaderNodeTexture2DParameter_uvbhj")

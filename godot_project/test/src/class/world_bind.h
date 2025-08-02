@@ -8,6 +8,8 @@
 #include <godot_cpp/classes/input.hpp>
 #include <godot_cpp/classes/resource_loader.hpp>
 #include <godot_cpp/classes/material.hpp>
+#include <godot_cpp/classes/viewport.hpp>
+#include <godot_cpp/classes/camera3d.hpp>
 #include <godot_cpp/classes/static_body3d.hpp>
 #include <godot_cpp/classes/collision_shape3d.hpp>
 #include <godot_cpp/classes/concave_polygon_shape3d.hpp>
@@ -23,9 +25,11 @@ class WorldBind : public godot::Node3D{
         World *world = new(World);
         Generation generation;
         std::unordered_map<Voxel::Vector3i, Chunk> chunk_list;
+        std::unordered_map<Voxel::Vector3i, Chunk> chunk_temp_list;
         godot::Ref<godot::Material> material = godot::ResourceLoader::get_singleton()->load("res://Assets/Material/block.tres");
 
         void _ready() override;
+        void _process(float _delta);
         void instance_chunk(Chunk &chunk);
 
         static godot::PackedVector3Array convert_arr_unordered(std::unordered_set<Voxel::Vector3i> _block_list){

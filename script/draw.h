@@ -40,7 +40,7 @@ class Draw{
                 Block block = block_pair.second;
 
                 if (block.id != Block::AIR){
-                    MyFace my_face = is_render_block(world, block);
+                    MyFace my_face = is_render_block(chunk, block);
 
                     if (my_face.is_draw){
                         normal_dir.clear(); vertex_dir.clear();
@@ -64,14 +64,14 @@ class Draw{
             return mesh;
         };
 
-        static MyFace is_render_block(World *_world, Block &block) {
+        static MyFace is_render_block(Chunk &_chunk, Block &block) {
             MyFace my_face;
 
             for (uint32_t index_direction : block.model.directions) {
                 Voxel::Vector3i new_dir = Voxel::DIRECTION[index_direction];
                 Voxel::Vector3i pos = new_dir + block.position;
 
-                if (_world->air_block.find(pos) != _world->air_block.end()) {
+                if (_chunk.air_block.find(pos) != _chunk.air_block.end()) {
                     my_face.is_draw = true;
                     my_face.direction.push_back(index_direction);
                 };

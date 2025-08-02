@@ -1,5 +1,6 @@
 #pragma once
 #include <iostream>
+#include <string>
 
 class Voxel{
     public:
@@ -12,6 +13,7 @@ class Voxel{
 
             Vector3i() = default;
             Vector3i(int32_t _x, int32_t _y, int32_t _z) : x(_x), y(_y), z(_z) {}
+            //Vector3i(Vector3 v) : x(int32_t(v.x)), y(int32_t(v.y)), z(int32_t(v.z)) {}
 
             static Vector3i zero() {
                 return Vector3i(0, 0, 0);
@@ -25,8 +27,23 @@ class Voxel{
             int sum_xyz() const {
                 return x + y + z;
             };
-            int index(Vector3i size) const {
+            Vector3i snapped(const Vector3i sn) const {
+                return Vector3i(((x + sn.x / 2) / sn.x) * sn.x, ((y + sn.y/2) / sn.y) * sn.y, ((z + sn.z/2) / sn.z) * sn.z);
+            };
+            std::string to_string() const {
+                std::string str;
+                str.append(std::to_string(x));
+                str.append(",");
+                str.append(std::to_string(y));
+                str.append(",");
+                str.append(std::to_string(z));
+                return str;
+            };
+            int index(const Vector3i size) const {
                 return x + y * size.x + z * size.x * size.y;
+            };
+            float distance_to(const Vector3i vec) const {
+                return std::sqrt((vec.x - x) * (vec.x - x) + (vec.y - y) * (vec.y - y) + (vec.z - z) * (vec.z - z));
             };
             bool operator==(const Vector3i& other) const {
                 return x == other.x && y == other.y && z == other.z;
@@ -39,6 +56,9 @@ class Voxel{
             };
             Vector3i operator*(const Vector3i other) const {
                 return Vector3i(x * other.x, y * other.y, z * other.z);
+            };
+            Vector3i operator*(const int other) const {
+                return Vector3i(x * other, y * other, z * other);
             };
         };
         struct Vector3{
@@ -59,8 +79,20 @@ class Voxel{
             float sum_xyz() const {
                 return x + y + z;
             };
+            std::string to_string() const {
+                std::string str;
+                str.append(std::to_string(x));
+                str.append(",");
+                str.append(std::to_string(y));
+                str.append(",");
+                str.append(std::to_string(z));
+                return str;
+            };
             float index(Vector3 size) const {
                 return x + y * size.x + z * size.x * size.y;
+            };
+            float distance_to(const Vector3 vec) const {
+                return std::sqrt((vec.x - x) * (vec.x - x) + (vec.y - y) * (vec.y - y) + (vec.z - z) * (vec.z - z));
             };
             bool operator==(const Vector3& other) const {
                 return x == other.x && y == other.y && z == other.z;
@@ -73,6 +105,9 @@ class Voxel{
             };
             Vector3 operator*(const Vector3 other) const {
                 return Vector3(x * other.x, y * other.y, z * other.z);
+            };
+            Vector3 operator*(const float other) const {
+                return Vector3(x * other, y * other, z * other);
             };
         };
         struct Vector2{
@@ -90,6 +125,13 @@ class Voxel{
             };
             float sum_xy() const {
                 return x + y;
+            };
+            std::string to_string() const {
+                std::string str;
+                str.append(std::to_string(x));
+                str.append(",");
+                str.append(std::to_string(y));
+                return str;
             };
             bool operator==(const Vector2& other) const {
                 return x == other.x && y == other.y;

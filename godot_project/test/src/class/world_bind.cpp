@@ -5,20 +5,25 @@ std::future<void> result;
 
 void WorldBind::_ready(){
     generation.new_noise(std::rand(), FastNoiseLite::NoiseType_Perlin,FastNoiseLite::FractalType_FBm, 0.01,5);
-    chunk_list = generation.generation_world(world, Voxel::Vector3i());
-
-
-
-    for (std::pair<const Voxel::Vector3i, Chunk> &chunk : chunk_list){
-        instance_chunk(chunk.second);
-        //result = std::async(std::launch::async, WorldBind::instance_chunk, chunk.second, this);
-    };
-
+    //get_viewport()->set_debug_draw(godot::Viewport::DEBUG_DRAW_OVERDRAW);
     emit_signal("world_ready");
     godot::UtilityFunctions::print((int64_t)chunk_list.size(), " chunks no mundo!");
-    godot::UtilityFunctions::print((int64_t)world->all_block.size(), " blocos solidos no mundo!");
+    godot::UtilityFunctions::print(" blocos solidos no mundo!");
 
 };
+
+
+void WorldBind::_process(float _delta){
+    godot::Vector3 cam_pos = get_viewport()->get_camera_3d()->get_global_position();
+
+    chunk_list = generation.generation_world(world, Voxel::Vector3i(cam_pos.x, cam_pos.y, cam_pos.z));
+
+    if (chunk_list.size() > 0){
+        for (std::pair<const Voxel::Vector3i, Chunk> &chunk : chunk_list){
+            instance_chunk(chunk.second);
+        };
+    }
+}
 
 
 void WorldBind::instance_chunk(Chunk &chunk){
@@ -58,6 +63,6 @@ void WorldBind::instance_chunk(Chunk &chunk){
         new_concave->set_faces(faces);
         new_mesh->set_mesh(array_mesh);
         new_collision->set_shape(new_concave);
-        new_mesh->set_material_overlay(material);
+        new_mesh->set_material_override(material);
      };
 };

@@ -1,5 +1,6 @@
 #include "player.h"
 
+bool debug_mode = false;
 
 void Player::_ready(){
     init_connection();
@@ -14,12 +15,22 @@ void Player::_world_ready(){
 
 
 void Player::_physics_process(float _delta){
-    movement();
-    apply_accelerated();
-    gravity();
-    jump();
+    if (debug_mode){
+        set_position(godot::Vector3(get_position().x, 30, get_position().z));
+        set_velocity(godot::Vector3(0,0,-SPEED_RUN * 2));
+        //Cam->set_rotation_degrees(godot::Vector3(0,0,0));
+    }else{
+        movement();
+        gravity();
+        jump();
+    }
 
+    apply_accelerated();
     move_and_slide();
+
+    if (godot::Input::get_singleton()->is_action_just_pressed("debug_mode")){
+        debug_mode = !debug_mode;
+    }
 };
 
 
