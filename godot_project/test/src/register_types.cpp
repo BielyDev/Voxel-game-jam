@@ -14,8 +14,10 @@
 #include "example/example.h"
 #include "example/tests.h"
 
-#include "class/camera_main.h"
 #include "class/world_bind.h"
+#include "class/player.h"
+#include "class/camera.h"
+#include "class/coordinate.h"
 
 using namespace godot;
 
@@ -25,8 +27,10 @@ void initialize_example_module(ModuleInitializationLevel p_level) {
 	}
 
 	//New ===
-	GDREGISTER_RUNTIME_CLASS(CameraMain);
+	GDREGISTER_CLASS(Coordinate);
+	GDREGISTER_RUNTIME_CLASS(Camera);
 	GDREGISTER_RUNTIME_CLASS(WorldBind);
+	GDREGISTER_RUNTIME_CLASS(Player);
 
 	//Example ===
 	GDREGISTER_CLASS(ExampleRef);

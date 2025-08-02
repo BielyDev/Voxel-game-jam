@@ -8,6 +8,11 @@
 #include <godot_cpp/classes/input.hpp>
 #include <godot_cpp/classes/resource_loader.hpp>
 #include <godot_cpp/classes/material.hpp>
+#include <godot_cpp/classes/viewport.hpp>
+#include <godot_cpp/classes/camera3d.hpp>
+#include <godot_cpp/classes/static_body3d.hpp>
+#include <godot_cpp/classes/collision_shape3d.hpp>
+#include <godot_cpp/classes/concave_polygon_shape3d.hpp>
 
 #include "../../../script/generation.h"
 #include "../../../script/draw.h"
@@ -20,10 +25,12 @@ class WorldBind : public godot::Node3D{
         World *world = new(World);
         Generation generation;
         std::unordered_map<Voxel::Vector3i, Chunk> chunk_list;
+        std::unordered_map<Voxel::Vector3i, Chunk> chunk_temp_list;
         godot::Ref<godot::Material> material = godot::ResourceLoader::get_singleton()->load("res://Assets/Material/block.tres");
 
         void _ready() override;
-        void instance_chunk(Chunk chunk);
+        void _process(float _delta);
+        void instance_chunk(Chunk &chunk);
 
         static godot::PackedVector3Array convert_arr_unordered(std::unordered_set<Voxel::Vector3i> _block_list){
             godot::PackedVector3Array _packet;
@@ -70,7 +77,7 @@ class WorldBind : public godot::Node3D{
 
             return _packet;
         };
-        static godot::PackedInt32Array convert_arr_u_int(std::vector<u_int> _value){
+        static godot::PackedInt32Array convert_arr_u_int(std::vector<uint32_t> _value){
             godot::PackedInt32Array _packet;
 
             for (int value_pair : _value){
@@ -86,5 +93,7 @@ class WorldBind : public godot::Node3D{
 
 
     protected:
-        static void _bind_methods(){};
+        static void _bind_methods(){
+            ADD_SIGNAL(godot::MethodInfo("world_ready"));
+        };
 };

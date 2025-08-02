@@ -8,9 +8,9 @@
 
 class BlockRegistry: public BlockScope{
     public:
-        int8_t id = BlockScope::AIR;
-        int8_t render = BlockScope::RENDER_NONE;
-        int8_t collision = BlockScope::COLLISION_NONE;
+        uint8_t id = BlockScope::AIR;
+        uint8_t render = BlockScope::RENDER_NONE;
+        uint8_t collision = BlockScope::COLLISION_NONE;
 
         Voxel::Vector3i position = Voxel::Vector3i::zero();
 
@@ -56,6 +56,60 @@ class BlockTemplate{
             );
 
             block.id = BlockScope::GRASS;
+            block.render = BlockScope::RENDER_SOLID;
+            block.collision = BlockScope::COLLISION_SOLID;
+
+            block.model = model;
+
+            return block;
+        };
+        static Block Dirt(){
+            Block block;
+            Models pre_model;
+            Models::ModelMap model = pre_model.Cube();
+
+            model.make_one_uv(
+                std::vector<Voxel::Vector2>{
+                    Voxel::Vector2(8,0),Voxel::Vector2(16,0),Voxel::Vector2(16,8),Voxel::Vector2(8,8)}
+            );
+
+            block.id = BlockScope::DIRT;
+            block.render = BlockScope::RENDER_SOLID;
+            block.collision = BlockScope::COLLISION_SOLID;
+
+            block.model = model;
+
+            return block;
+        };
+        static Block Stone(){
+            Block block;
+            Models pre_model;
+            Models::ModelMap model = pre_model.Cube();
+
+            model.make_one_uv(
+                std::vector<Voxel::Vector2>{
+                    Voxel::Vector2(8,8),Voxel::Vector2(16,8),Voxel::Vector2(16,16),Voxel::Vector2(8,16)}
+            );
+
+            block.id = BlockScope::STONE;
+            block.render = BlockScope::RENDER_SOLID;
+            block.collision = BlockScope::COLLISION_SOLID;
+
+            block.model = model;
+
+            return block;
+        };
+        static Block Glass(){
+            Block block;
+            Models pre_model;
+            Models::ModelMap model = pre_model.Cube();
+
+            model.make_one_uv(
+                std::vector<Voxel::Vector2>{
+                    Voxel::Vector2(16,8),Voxel::Vector2(24,8),Voxel::Vector2(24,16),Voxel::Vector2(16,16)}
+            );
+
+            block.id = BlockScope::GLASS;
             block.render = BlockScope::RENDER_SOLID;
             block.collision = BlockScope::COLLISION_SOLID;
 

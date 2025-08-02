@@ -2,43 +2,44 @@
 
 [ext_resource type="Environment" uid="uid://dtd3q2x2ulcsi" path="res://default_env.tres" id="1_p7faw"]
 
-[sub_resource type="GDScript" id="GDScript_p7faw"]
-script/source = "extends Node3D
-
-func _process(_delta: float) -> void:
-	$Label.text = str(Engine.get_frames_per_second())
-"
+[sub_resource type="PlaneMesh" id="PlaneMesh_p7faw"]
 
 [node name="World" type="Node3D"]
-script = SubResource("GDScript_p7faw")
 
-[node name="SubViewportContainer" type="SubViewportContainer" parent="."]
+[node name="WorldBind" type="WorldBind" parent="."]
+
+[node name="Player" type="Player" parent="." node_paths=PackedStringArray("world_bind")]
+world_bind = NodePath("../WorldBind")
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 100, 0)
+
+[node name="Gui" type="CanvasLayer" parent="Player"]
+
+[node name="Hud" type="Control" parent="Player/Gui"]
+layout_mode = 3
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
-stretch = true
 
-[node name="SubViewport" type="SubViewport" parent="SubViewportContainer"]
-handle_input_locally = false
-size = Vector2i(1152, 648)
-render_target_update_mode = 4
-
-[node name="CameraMain" type="CameraMain" parent="SubViewportContainer/SubViewport"]
-
-[node name="WorldBind" type="WorldBind" parent="."]
+[node name="Coordinate" type="Coordinate" parent="Player/Gui/Hud" node_paths=PackedStringArray("node")]
+node = NodePath("../../..")
+num_real = 1
+layout_mode = 1
+offset_right = 145.0
+offset_bottom = 49.0
+text = "X: 0.0 Y: 100.0 Z: 0.0
+FPS: 145"
 
 [node name="WorldEnvironment" type="WorldEnvironment" parent="."]
 environment = ExtResource("1_p7faw")
-
-[node name="Label" type="Label" parent="."]
-offset_right = 40.0
-offset_bottom = 23.0
 
 [node name="DirectionalLight3D" type="DirectionalLight3D" parent="."]
 transform = Transform3D(0.715693, 0.417127, -0.560169, 0, 0.802057, 0.597247, 0.698415, -0.427446, 0.574027, 0, 0, 0)
 light_energy = 0.525
 light_cull_mask = 4293918721
-shadow_enabled = true
 shadow_opacity = 0.57
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="."]
+transform = Transform3D(-0.232937, 0.869333, 0, -0.869333, -0.232937, 0, 0, 0, 0.9, 40, 15.195, 0)
+mesh = SubResource("PlaneMesh_p7faw")

@@ -1,10 +1,11 @@
 #pragma once
 
-
 #include <iostream>
+#include <string>
 #include <vector>
 #include <any>
 #include <algorithm>
+#include <valarray>
 
 #include "chunk.h"
 #include "world.h"
@@ -15,88 +16,98 @@
 class Draw{
 
     public:
-        static Models::ModelMap draw_chunk(Chunk chunk, World *world){
+        struct MyFace{
+            bool is_draw = false;
+            std::vector<uint8_t> direction;
+        };
+
+        static Models::ModelMap draw_chunk(Chunk &chunk, World *world){
 
             int _block_count = 0;
-            Models::ModelMap mm;
+            Models::ModelMap mesh;
 
+            std::vector<Voxel::Vector3i> normal_dir;
+            std::vector<Voxel::Vector3> vertex_dir;
+            std::vector<Voxel::Vector2> uv_dir;
+            std::vector<uint32_t> index_dir;
 
-            for (std::pair block_pair : chunk.block_array){
+            mesh.vertices.reserve(2000);
+            mesh.normal.reserve(2000);
+            mesh.indices.reserve(3000);
+            mesh.uv.reserve(2000);
+
+            for (std::pair<const Voxel::Vector3i, Block>& block_pair : chunk.block_array){
                 Block block = block_pair.second;
 
-                if (is_render_block(world, block.position) == true){
+                if (block.id != Block::AIR){
+                    MyFace my_face = is_render_block(chunk, block);
 
-                    std::vector<Voxel::Vector3> arr_v = append_vertice_array(block.model.vertices, block.position);
-                    std::vector<Voxel::Vector3i> arr_n = append_normal_array(block.model.normal);
-                    //int vertex_offset = static_cast<int>();
+                    if (my_face.is_draw){
+                        normal_dir.clear(); vertex_dir.clear();
+                        index_dir.clear(); uv_dir.clear();
 
-                    std::vector<int> arr_i = append_indice_array(block.model.indices, mm.vertices.size());
+                        for (const uint8_t& direction : my_face.direction){
+                            insert_vertex( mesh.vertices, mesh.indices, block.model.vertices, block.model.indices, direction, block.position);
 
-                    _block_count ++;
+                            insert_uv( uv_dir, block.model.uv, direction);
+                            insert_normal( normal_dir, block.model.normal, direction);
+                        };
 
-                    mm.vertices.insert(
-                        mm.vertices.end(),
-                        arr_v.begin(),
-                        arr_v.end()
-                    );
-                    mm.indices.insert(
-                        mm.indices.end(),
-                        arr_i.begin(),
-                        arr_i.end()
-                    );
-                    mm.normal.insert(
-                        mm.normal.end(),
-                        arr_n.begin(),
-                        arr_n.end()
-                    );
-                    mm.uv.insert(
-                        mm.uv.end(),
-                        block.model.uv.begin(),
-                        block.model.uv.end()
-                    );
+                        mesh.normal.insert(mesh.normal.end(),normal_dir.begin(),normal_dir.end());
+                        mesh.uv.insert(mesh.uv.end(),uv_dir.begin(),uv_dir.end());
+
+                        _block_count ++;
+                    };
                 };
             };
 
-            return mm;
+            return mesh;
         };
-        static bool is_render_block(World *_world, Voxel::Vector3i _position){
-            for(Voxel::Vector3i dir : BlockScope::DIRECTION){
-                //vou deixar essa var criada pra nunca mais esquecer da onde vem o interador.
-                Voxel::Vector3i pos = dir + _position;
 
-                if (_world->air_block.find(pos) != _world->air_block.end()){return true;};
+        static MyFace is_render_block(Chunk &_chunk, Block &block) {
+            MyFace my_face;
+
+            for (uint32_t index_direction : block.model.directions) {
+                Voxel::Vector3i new_dir = Voxel::DIRECTION[index_direction];
+                Voxel::Vector3i pos = new_dir + block.position;
+
+                if (_chunk.air_block.find(pos) != _chunk.air_block.end()) {
+                    my_face.is_draw = true;
+                    my_face.direction.push_back(index_direction);
+                };
             };
 
-            return false;
+            return my_face;
         };
 
 
+        static void insert_vertex(std::vector<Voxel::Vector3>& vertex_arr, std::vector<uint32_t>& index_arr, const std::vector<Voxel::Vector3>& vertices, const std::vector<uint32_t>& indices, const uint8_t& direction, const Voxel::Vector3i& position){
+            std::vector<Voxel::Vector3>::const_iterator it_start = vertices.begin() + (direction * 4);
+            std::vector<Voxel::Vector3>::const_iterator it_end = vertices.begin() + ((direction + 1) * 4);
 
-        static std::vector<Voxel::Vector3> append_vertice_array(std::vector<Voxel::Vector3> _vector_list, Voxel::Vector3i _vector3) {
-            std::vector<Voxel::Vector3> _arr;
 
-            for (Voxel::Vector3 vec : _vector_list){
-                _arr.push_back(vec + Voxel::Vector3(_vector3));
+            for (uint32_t i : indices){
+                index_arr.push_back(i + vertex_arr.size());
             };
 
-            return _arr;
-        };
-        static std::vector<Voxel::Vector3i> append_normal_array(std::vector<Voxel::Vector3i> _vector_list) {
-            std::vector<Voxel::Vector3i> _arr;
-
-            for (Voxel::Vector3i vec : _vector_list){
-                _arr.push_back(vec);
+            for (std::vector<Voxel::Vector3>::const_iterator it_now = it_start; it_now != it_end; it_now++){
+                vertex_arr.push_back((*it_now) + position);
             };
-
-            return _arr;
         };
-        static std::vector<int> append_indice_array(std::vector<int> _int_list, int _add) {
-            std::vector<int> _arr;
+        static void insert_uv(std::vector<Voxel::Vector2>& uv_arr, const std::vector<Voxel::Vector2> &uv_list, const uint8_t& direction){
+            std::vector<Voxel::Vector2>::const_iterator it_start = uv_list.begin() + (direction * 4);
+            std::vector<Voxel::Vector2>::const_iterator it_end = uv_list.begin() + ((direction + 1) * 4);
 
-            for (int number : _int_list){
-                _arr.push_back(number + _add);
+            for (std::vector<Voxel::Vector2>::const_iterator it_now = it_start; it_now != it_end; it_now++){
+                uv_arr.push_back(*it_now);
             };
-
-            return _arr;
         };
-};
+        static void insert_normal(std::vector<Voxel::Vector3i>& normal_arr,const std::vector<Voxel::Vector3i> &normal, const uint8_t& direction){
+            std::vector<Voxel::Vector3i>::const_iterator it_start = normal.begin() + (direction * 4);
+            std::vector<Voxel::Vector3i>::const_iterator it_end = normal.begin() + ((direction + 1) * 4);
+
+            for (std::vector<Voxel::Vector3i>::const_iterator it_now = it_start; it_now != it_end; it_now++){
+                normal_arr.push_back(*it_now);
+            };
+        };
+    };

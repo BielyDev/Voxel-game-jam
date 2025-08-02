@@ -3,6 +3,7 @@
 [ext_resource type="Texture2D" uid="uid://dwx5ejkca8o8x" path="res://Assets/Image/sprite.png" id="1_uvbhj"]
 
 [sub_resource type="VisualShaderNodeTexture" id="VisualShaderNodeTexture_plyog"]
+expanded_output_ports = [0]
 source = 5
 texture = ExtResource("1_uvbhj")
 
@@ -19,7 +20,7 @@ default_value = 0.1
 
 [resource]
 code = "shader_type spatial;
-render_mode blend_mix, depth_draw_opaque, cull_back, diffuse_lambert, specular_schlick_ggx;
+render_mode blend_mix, depth_draw_always, cull_back, diffuse_lambert, specular_schlick_ggx, depth_prepass_alpha;
 
 uniform sampler2D Texture : hint_default_black, filter_nearest_mipmap, repeat_disable;
 
@@ -29,19 +30,23 @@ void fragment() {
 	vec4 n_out2p0;
 // Texture2D:2
 	n_out2p0 = texture(Texture, UV);
+	float n_out2p4 = n_out2p0.a;
 
 
 // Output:0
 	ALBEDO = vec3(n_out2p0.xyz);
+	ALPHA = n_out2p4;
 
 
 }
 "
-graph_offset = Vector2(-181.65, 20.8608)
+graph_offset = Vector2(-171.725, -69.9662)
+modes/depth_draw = 1
+flags/depth_prepass_alpha = true
 nodes/fragment/2/node = SubResource("VisualShaderNodeTexture_plyog")
 nodes/fragment/2/position = Vector2(-360, 40)
 nodes/fragment/3/node = SubResource("VisualShaderNodeTexture2DParameter_uvbhj")
 nodes/fragment/3/position = Vector2(-800, 80)
 nodes/fragment/4/node = SubResource("VisualShaderNodeFloatParameter_uvbhj")
 nodes/fragment/4/position = Vector2(-80, 400)
-nodes/fragment/connections = PackedInt32Array(2, 0, 0, 0, 3, 0, 2, 2)
+nodes/fragment/connections = PackedInt32Array(3, 0, 2, 2, 2, 4, 0, 1, 2, 0, 0, 0)
